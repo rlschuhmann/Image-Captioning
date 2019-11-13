@@ -9,6 +9,7 @@ from imagenet_utils import preprocess_input as i_preprocess_input
 
 import os
 import numpy as np
+from keras import backend as K
 from keras.preprocessing import image
 from keras.applications.imagenet_utils import preprocess_input as k_preprocess_input #distinguish from imagenet_utils.preprocess_input!
 
@@ -48,7 +49,7 @@ def test_preprocess():
 def test_vgg16(load_example_image):
 	'''
 	Wherein we test vgg16.py. We create the model, load a test image, perform the
-	embedding, and test the result for correct shape, correct number of nonzero
+	encoding, and test the result for correct shape, correct number of nonzero
 	entries, correct first 100 entries.
 	'''
 
@@ -64,8 +65,42 @@ def test_vgg16(load_example_image):
 	assert(len(preds[0][preds[0]!=0])==1368)
 	np.testing.assert_allclose(preds[0,:100],vgg16_pred_slice,err_msg='VGG16 encoding yielded wrong encoding for test image!')
 
-def test_utils_preprocessing():
-	pass
+def test_utils_preprocessing(load_example_image):
+	'''
+	Wherein we test imagenet_utils.encodings(), which is slightly different from
+	keras.applications.imagenet_utils.preprocessing. It reorders the axes, flips
+	the order of colours, and subtracts constant values from each colour.
+	'''
+
+	dim_ordering=K.image_dim_ordering()
+	assert(dim_ordering in ['tf','th'])
+
+	x=load_example_image
+	x_pre=x.copy()
+	x=i_preprocess_input(x)
+
+	if dim_ordering=='th':
+		#BGR -> RGB
+		x=x[ :, ::-1, :, : ]
+		diff=x-x_pre
+
+		colR=diff[ :, 0, :, : ]
+		colG=diff[ :, 1, :, : ]
+		colB=diff[ :, 2, :, : ]
+	else:
+		#BGR -> RGB
+		x=x[ :, :, :, ::-1 ]
+		diff=x-x_pre
+
+		colR=diff[ :, :, :, 0 ]
+		colG=diff[ :, :, :, 1 ]
+		colB=diff[ :, :, :, 2 ]
+
+	np.testing.assert_allclose(colR,-103.939)
+	np.testing.assert_allclose(colG,-116.779)
+	np.testing.assert_allclose(colB,-123,68)
+
+
 
 def test_encodings():
 	'''
