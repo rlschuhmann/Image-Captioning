@@ -4,7 +4,6 @@ import os
 
 from SceneDesc import scenedesc
 
-
 test_image_id=4242
 image_folder='Flickr8K_Data/'
 true_enc=np.array([0,0.41896123,0,0,0.8073355,0,0,0,0,0,0,0,3.6969965,0,0,0,1.966795,0,0,0,2.4138303,0,0,0,0,0.540326,5.7941747,0,0,0,1.9354384,0,0,0,0,0,0,0,0,0.2696853,0,0,0.33549678,0,1.3821363,0,0,0,0,0,1.5806007,0,0,0,0,0,0,0,0,0,0,0,1.1648078,0,0,0,0,0,0,0,0,0,1.9297309,2.7865145,0,0,0,0.24934426,3.30201,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
@@ -20,15 +19,16 @@ true_img_slice=np.array([[105., 166., 148.,  55.,  69., 117., 136., 150., 191., 
        [130., 143., 149.,  74.,  73.,  64., 178., 167., 152., 207.]],)
 
 
+@pytest.fixture(scope='module')
+def sd(request):
+	return scenedesc()
 
 @pytest.mark.slow
-def test_constructor():
+def test_constructor(sd):
 	'''
 	Wherein we instantiate one object of scenedesc and check
 	that it has the correct properties
 	'''
-	sd=scenedesc()
-
 	#check sd.captions
 	assert(len(sd.captions)==29999)
 	assert(sd.captions[test_image_id]=='<start> The bald woman is standing smiling next to a frowning man . <end>')
@@ -64,19 +64,36 @@ def test_constructor():
 	for word in sd.word_index.keys():
 		assert(word==sd.index_word[sd.word_index[word]])
 
-def test_load_image():
+def test_train_generator():
+	pass
+
+def test_model_structure():
+	pass
+
+def test_model_evaluation():
+	pass
+
+def test_training():
+	'''
+	Wherein we test whether we can set up and run a training generator:
+	we only train on one picture for one step, and check that the 
+	trainable parameters have changed.
+	'''
+	pass	
+
+
+def test_load_image(sd):
 	'''
 	Wherein we test the wrapper load_image by checking one example
 	'''
-	sd=scenedesc()
 	img=sd.load_image(os.path.join(image_folder, sd.img_id[666]))
 	assert(img.shape==(224,224,3))
 	np.testing.assert_allclose(img[:10,:10,0],true_img_slice)
 
-def test_get_word():
+def test_get_word(sd):
 	'''
 	Wherein we test the wrapper get_word by checking one example
 	'''
 
-	sd=scenedesc()
 	assert(sd.get_word(666)=='quarter')
+
