@@ -45,7 +45,7 @@ def test_preprocess():
 	assert train_captions[42]=='2638369467_8fc251595b.jpg\t<start> A smiling young girl in braids is playing ball . <end>'
 	assert test_captions[42]=='280706862_14c30d734a.jpg\t<start> A black dog on a beach carrying a ball in its mouth . <end>'
 
-
+@pytest.mark.slow
 def test_vgg16(load_example_image):
 	'''
 	Wherein we test vgg16.py. We create the model, load a test image, perform the
@@ -101,7 +101,7 @@ def test_utils_preprocessing(load_example_image):
 	np.testing.assert_allclose(colB,-123,68)
 
 
-
+@pytest.mark.slow
 def test_encodings():
 	'''
 	We test encode_image.encodings(), which is just a wrapper for VGG16.
