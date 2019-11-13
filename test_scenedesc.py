@@ -50,3 +50,11 @@ def test_constructor():
 
 	for word in sd.word_index.keys():
 		assert(word==sd.index_word[sd.word_index[word]])
+
+def test_get_word():
+	'''
+	Wherein we test the wrapper get_word by checking one example
+	'''
+
+	sd=scenedesc()
+	assert(sd.get_word(666)=='quarter')
