@@ -17,7 +17,7 @@ true_img_slice=np.array([[105., 166., 148.,  55.,  69., 117., 136., 150., 191., 
        [161.,  94., 149.,  87.,  61.,  63.,  62., 158., 193., 201.],
        [156., 130., 128.,  91.,  76.,  43.,  95., 158., 188., 215.],
        [130., 143., 149.,  74.,  73.,  64., 178., 167., 152., 207.]],)
-
+true_X_slice=np.array([[0,0,1.3217616,0,2.9636335,0,5.2782164,0,0,0,0,0,0,1.5424823,0,0,0,2.9206674,0,2.2342544,2.7055874,0.9519915,3.3693693,1.601603,0,0,2.686882,0,0,0.8407563,0,5.28025,0,0,0,0,1.285548,3.7856739,0.40175304,4.5349374,0.26478094,0.89722455,0.03038335,0,3.1030846,0,0.43142515,0.7068827,0,2.1046154],[0,0,1.3217616,0,2.9636335,0,5.2782164,0,0,0,0,0,0,1.5424823,0,0,0,2.9206674,0,2.2342544,2.7055874,0.9519915,3.3693693,1.601603,0,0,2.686882,0,0,0.8407563,0,5.28025,0,0,0,0,1.285548,3.7856739,0.40175304,4.5349374,0.26478094,0.89722455,0.03038335,0,3.1030846,0,0.43142515,0.7068827,0,2.1046154]])
 
 @pytest.fixture(scope='module')
 def sd(request):
@@ -64,8 +64,34 @@ def test_constructor(sd):
 	for word in sd.word_index.keys():
 		assert(word==sd.index_word[sd.word_index[word]])
 
-def test_train_generator():
-	pass
+def test_train_generator(sd):
+	'''
+	Wherein we test the data generating process. We initialise it with
+	a batch size of 2 and check the first element in the usual way:
+	correct shape, correct number of nonvanishing elements, checking
+	a few (or all) of those elements.
+	'''
+
+	datagen=sd.data_process(batch_size=2)
+	d=next(datagen)
+
+	#correct shape
+	assert(len(d)==len(d[0])==2)
+	assert(d[0][0].shape==(2,4096))
+	assert(d[0][1].shape==(2,40))
+	assert(d[1].shape==(2,8256))
+
+	#correct number of entries	
+	assert(np.count_nonzero(d[0][0])==2290)
+	assert(np.count_nonzero(d[0][1])==3)
+	assert(np.count_nonzero(d[1])==2)
+
+	#checking entries
+
+	d01_nonvanishing=np.array([d[0][1][0,0],d[0][1][1,0],d[0][1][1,1]])
+	np.testing.assert_allclose(d01_nonvanishing,np.array([4012,4012,4798]))
+	d1_nonvanishing=np.array([d[1][0,4798],d[1][1,4332]])
+	np.testing.assert_allclose(d1_nonvanishing,np.ones(2))
 
 def test_model_structure():
 	pass
