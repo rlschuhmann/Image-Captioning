@@ -190,13 +190,21 @@ def test_model_prediction(sd):
 	assert(predictions.shape==(1,8256))
 	np.testing.assert_allclose(predictions,0.00012112403)
 
-def test_training():
+def test_training(sd):
 	'''
-	Wherein we test whether we can set up and run a training generator:
-	we only train on one picture for one step, and check that the 
-	trainable parameters have changed.
+	Wherein we test whether we can train the model: we only 
+	train on the first ten training examples for five epoch, 
+	and check the values for loss/accuracy.
 	'''
-	pass	
+	model=sd.create_model()
+	model=set_model_weights_to_ones(model)
+
+	x,y=next(sd.data_process(batch_size=10))
+
+	history=model.fit(x,y,epochs=5)
+	
+	np.testing.assert_allclose(history.history['acc'],[0,.1,.2,.2,.1])
+	np.testing.assert_allclose(history.history['loss'],[9.018665313720703, 3.167734146118164, 2.2226524353027344, 2.216876983642578, 2.237905979156494])
 
 
 def test_load_image(sd):
