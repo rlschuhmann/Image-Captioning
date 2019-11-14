@@ -87,7 +87,7 @@ def test_train_generator(sd):
 	assert(np.count_nonzero(d[1])==2)
 
 	#checking entries
-
+	np.testing.assert_allclose(d[0][0][:,:50],true_X_slice)
 	d01_nonvanishing=np.array([d[0][1][0,0],d[0][1][1,0],d[0][1][1,1]])
 	np.testing.assert_allclose(d01_nonvanishing,np.array([4012,4012,4798]))
 	d1_nonvanishing=np.array([d[1][0,4798],d[1][1,4332]])
@@ -107,6 +107,8 @@ def test_training():
 	'''
 	pass	
 
+def test_full_eval():
+	pass
 
 def test_load_image(sd):
 	'''
