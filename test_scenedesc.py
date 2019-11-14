@@ -147,6 +147,10 @@ def return_ones_like(weights):
 	return new_weights
 
 def set_model_weights_to_ones(model):
+	'''
+	take a keras model and set all weights of all layers
+	to unity
+	'''
 	for layer in model.layers:
 		weights=layer.get_weights()
 		new_weights=return_ones_like(weights)
