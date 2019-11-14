@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import os
+from keras.optimizers import RMSprop
 
 from SceneDesc import scenedesc
 
@@ -93,8 +94,46 @@ def test_train_generator(sd):
 	d1_nonvanishing=np.array([d[1][0,4798],d[1][1,4332]])
 	np.testing.assert_allclose(d1_nonvanishing,np.ones(2))
 
-def test_model_structure():
-	pass
+def test_model_structure(sd):
+	'''
+	Wherein we create the model and check that it has the
+	right structure. We check for layer names, the shape of
+	input/output and the shapes each layers' weights. We also
+	check the loss and the optimizer.
+	'''
+	model=sd.create_model()
+	layers=model.layers
+
+	#check correct number and type of layers
+	assert(len(layers)==4)
+	layer_names=[layer.name for layer in layers]
+	assert(layer_names==['merge_1','lstm_2','dense_3','activation_1'])
+
+	#check correct i/o shapes
+	assert(model.input_shape==[(None,4096),(None,40)])
+	assert(model.output_shape==(None,8256))
+	#check correct format of weights for each layer
+	assert(len(layers[0].get_weights())==0)
+	assert(len(layers[3].get_weights())==0)
+
+	w1=layers[1].get_weights()
+	assert(len(w1)==3)
+	assert(w1[0].shape==(256,4000))
+	assert(w1[1].shape==(1000,4000))
+	assert(w1[2].shape==(4000,))
+
+	w2=layers[2].get_weights()
+	assert(len(w2)==2)
+	assert(w2[0].shape==(1000,8256))
+	assert(w2[1].shape==(8256,))
+
+	#check loss
+	assert(model.loss=='categorical_crossentropy')
+
+	#check optimizer
+	assert(type(model.optimizer)==RMSprop)
+
+
 
 def test_model_evaluation():
 	pass
