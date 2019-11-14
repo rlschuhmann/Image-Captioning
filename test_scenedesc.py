@@ -175,10 +175,20 @@ def test_model_evaluation(sd):
 	np.testing.assert_allclose(return_metrics,[9.018665313720703, 0.0])
 
 def test_model_prediction(sd):
+	'''
+	Wherein we initialise the model with all weights set to
+	unity, compute predictions for the first element
+	of the training set, and check against their true values.
+	'''
+	#initialise model, set weights to one
 	model=sd.create_model()
 	model=set_model_weights_to_ones(model)
 
-	pass
+	#get first training example, get predictions on it
+	x,_=next(sd.data_process(batch_size=1))
+	predictions=model.predict(x)
+	assert(predictions.shape==(1,8256))
+	np.testing.assert_allclose(predictions,0.00012112403)
 
 def test_training():
 	'''
@@ -188,8 +198,6 @@ def test_training():
 	'''
 	pass	
 
-def test_full_eval():
-	pass
 
 def test_load_image(sd):
 	'''
