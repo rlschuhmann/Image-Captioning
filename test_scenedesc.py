@@ -136,7 +136,7 @@ def test_model_structure(sd):
 	#check optimizer
 	assert(type(model.optimizer)==RMSprop)
 
-def init_weights_to_ones(weights):
+def return_ones_like(weights):
 	'''
 	given weights in form of a list of arrays, create a list 
 	of arrays of the same shape, but containing only ones
@@ -146,18 +146,24 @@ def init_weights_to_ones(weights):
 		new_weights.append(np.ones_like(array))
 	return new_weights
 
+def set_model_weights_to_ones(model):
+	for layer in model.layers:
+		weights=layer.get_weights()
+		new_weights=return_ones_like(weights)
+		layer.set_weights(new_weights)
+	return model
+
+
 def test_model_evaluation(sd):
 	'''
 	Wherein we initialise the model with all weights set to 
 	unity, and then evaluate the metrics [loss, accuracy] on a 
 	single training example
+
 	'''
 	#initialise model, and set all weights to one
 	model=sd.create_model()
-	for layer in model.layers:
-		weights=layer.get_weights()
-		new_weights=init_weights_to_ones(weights)
-		layer.set_weights(new_weights)
+	model=set_model_weights_to_ones(model)
 
 	#get first element of training set
 	x,y=next(sd.data_process(batch_size=1))
@@ -165,6 +171,9 @@ def test_model_evaluation(sd):
 	np.testing.assert_allclose(return_metrics,[9.018665313720703, 0.0])
 
 def test_model_prediction(sd):
+	model=sd.create_model()
+	model=set_model_weights_to_ones(model)
+
 	pass
 
 def test_training():
