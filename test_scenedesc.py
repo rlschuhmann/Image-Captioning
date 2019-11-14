@@ -54,7 +54,7 @@ def test_constructor(sd):
 
 	for word in sd.word_index.keys():
 		assert(word==sd.index_word[sd.word_index[word]])
-
+@pytest.mark.slow
 def test_train_generator(sd):
 	'''
 	Wherein we test the data generating process. We initialise it with
@@ -85,6 +85,7 @@ def test_train_generator(sd):
 	d1_nonvanishing=np.array([d[1][0,4798],d[1][1,4332]])
 	np.testing.assert_allclose(d1_nonvanishing,np.ones(2))
 
+@pytest.mark.slow
 def test_model_structure(sd):
 	'''
 	Wherein we create the model and check that it has the
@@ -148,7 +149,7 @@ def set_model_weights_to_ones(model):
 		layer.set_weights(new_weights)
 	return model
 
-
+@pytest.mark.slow
 def test_model_evaluation(sd):
 	'''
 	Wherein we initialise the model with all weights set to 
@@ -165,6 +166,7 @@ def test_model_evaluation(sd):
 	return_metrics=model.evaluate(x=x,y=y)
 	np.testing.assert_allclose(return_metrics,[9.018665313720703, 0.0])
 
+@pytest.mark.slow
 def test_model_prediction(sd):
 	'''
 	Wherein we initialise the model with all weights set to
@@ -181,6 +183,7 @@ def test_model_prediction(sd):
 	assert(predictions.shape==(1,8256))
 	np.testing.assert_allclose(predictions,0.00012112403)
 
+@pytest.mark.slow
 def test_training(sd):
 	'''
 	Wherein we test whether we can train the model: we only 
@@ -196,7 +199,6 @@ def test_training(sd):
 	
 	np.testing.assert_allclose(history.history['acc'],[0,.1,.2,.2,.1])
 	np.testing.assert_allclose(history.history['loss'],[9.018665313720703, 3.167734146118164, 2.2226524353027344, 2.216876983642578, 2.237905979156494])
-
 
 def test_load_image(sd):
 	'''
