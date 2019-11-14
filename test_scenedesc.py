@@ -99,7 +99,7 @@ def test_model_structure(sd):
 	Wherein we create the model and check that it has the
 	right structure. We check for layer names, the shape of
 	input/output and the shapes each layers' weights. We also
-	check the loss and the optimizer.
+	check the names for metrics and loss as well as the optimizer.
 	'''
 	model=sd.create_model()
 	layers=model.layers
@@ -127,15 +127,44 @@ def test_model_structure(sd):
 	assert(w2[0].shape==(1000,8256))
 	assert(w2[1].shape==(8256,))
 
+	#check metrics
+	assert(model.metrics_names==['loss','acc'])
+
 	#check loss
 	assert(model.loss=='categorical_crossentropy')
 
 	#check optimizer
 	assert(type(model.optimizer)==RMSprop)
 
+def init_weights_to_ones(weights):
+	'''
+	given weights in form of a list of arrays, create a list 
+	of arrays of the same shape, but containing only ones
+	'''
+	new_weights=list()
+	for array in weights:
+		new_weights.append(np.ones_like(array))
+	return new_weights
 
+def test_model_evaluation(sd):
+	'''
+	Wherein we initialise the model with all weights set to 
+	unity, and then evaluate the metrics [loss, accuracy] on a 
+	single training example
+	'''
+	#initialise model, and set all weights to one
+	model=sd.create_model()
+	for layer in model.layers:
+		weights=layer.get_weights()
+		new_weights=init_weights_to_ones(weights)
+		layer.set_weights(new_weights)
 
-def test_model_evaluation():
+	#get first element of training set
+	x,y=next(sd.data_process(batch_size=1))
+	return_metrics=model.evaluate(x=x,y=y)
+	np.testing.assert_allclose(return_metrics,[9.018665313720703, 0.0])
+
+def test_model_prediction(sd):
 	pass
 
 def test_training():
