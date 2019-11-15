@@ -13,7 +13,7 @@ def preprocessing():
 	train_imgs_id = open("Flickr8K_Text/Flickr_8k.trainImages.txt").read().split('\n')[:-1]
 
 	
-	train_imgs_captions = open("Flickr8K_Text/trainimgs.txt",'wb')
+	train_imgs_captions = open("Flickr8K_Text/trainimgs.txt",'w')
 	for img_id in train_imgs_id:
 		for captions in caption[img_id]:
 			desc = "<start> "+captions+" <end>"
@@ -23,7 +23,7 @@ def preprocessing():
 
 	test_imgs_id = open("Flickr8K_Text/Flickr_8k.testImages.txt").read().split('\n')[:-1]
 
-	test_imgs_captions = open("Flickr8K_Text/testimgs.txt",'wb')
+	test_imgs_captions = open("Flickr8K_Text/testimgs.txt",'w')
 	for img_id in test_imgs_id:
 		for captions in caption[img_id]:
 			desc = "<start> "+captions+" <end>"
