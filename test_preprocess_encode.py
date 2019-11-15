@@ -21,9 +21,9 @@ test_image='3666056567_661e25f54c.jpg'
 
 @pytest.fixture(scope='module')
 def load_example_image(request):
-        img=image.load_img(os.path.join(image_folder,test_image),target_size=(224,224))
-        x=image.img_to_array(img)
-        x=np.expand_dims(x,axis=0)
+	img=image.load_img(os.path.join(image_folder,test_image),target_size=(224,224))
+	x=image.img_to_array(img)
+	x=np.expand_dims(x,axis=0)
 	return x
 
 def test_preprocess():
@@ -114,4 +114,4 @@ def test_encodings():
 	encoding_pred_slice=np.array([0,0,0,0,6.943786,0,0,0,0,0.495808,0,0,1.2099614,0,0,1.9550853,0,2.5830698,0,0,1.5520213,6.7467823,0.30691597,0.6208435,0,3.8465405,3.7862554,2.3970299,0,0,3.5254822,2.7294598,0,0,2.7226853,0,3.2338202,2.3976898,0,6.3592043,0,2.7090664,0,0,10.004378,0,0,0,3.0425727,2.0538316,1.8156273,0.15581878,2.3381875,0.88823074,0,0,0,0,0,0,0.036334604,0,0,0,3.5556676,0.29299664,0,0,0,0,0,0,1.0033253,0,0,0,0.96017045,0,5.8062425,0,4.4312,0,0,0,0,0,0,0,2.7901797,0.5715834,0.76234996,1.7294867,1.2244358,0,0,0,0,0,0,0,])
 	assert(preds.shape==(4096,))
 	assert(len(preds[preds!=0])==1351)
-        np.testing.assert_allclose(preds[:100],encoding_pred_slice,err_msg='encoding wrapper yielded wrong encoding for test image!')
+	np.testing.assert_allclose(preds[:100],encoding_pred_slice,err_msg='encoding wrapper yielded wrong encoding for test image!')
