@@ -96,10 +96,12 @@ def test_model_structure(sd):
 	model=sd.create_model()
 	layers=model.layers
 
-	#check correct number and type of layers
+	#check correct number and type of layers: if multiple model instances are created during one test session, then the numbers for the layers can change
 	assert(len(layers)==4)
 	layer_names=[layer.name for layer in layers]
-	assert(layer_names==['merge_1','lstm_2','dense_3','activation_1'])
+	layer_names=[n[:n.index('_')] for n in layer_names]#discarding numbers
+	true_layer_names=['merge','lstm','dense','activation']
+	assert(layer_names==true_layer_names)
 
 	#check correct i/o shapes
 	assert(model.input_shape==[(None,4096),(None,40)])
