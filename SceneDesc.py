@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
-from keras.models import Sequential
-from keras.layers import LSTM, Embedding, TimeDistributed, Dense, RepeatVector, Merge, Activation
+from keras.models import Model
+from keras.layers import Input, LSTM, Embedding, TimeDistributed, Dense, RepeatVector, concatenate, Activation
 from keras.preprocessing import image, sequence
-import cPickle as pickle
+import pickle
 
 EMBEDDING_DIM = 128
 
@@ -26,7 +26,7 @@ class scenedesc():
 		iter = dataframe.iterrows()
 
 		for i in range(len(dataframe)):
-		    nextiter = iter.next()
+		    nextiter = next(iter)
 		    self.captions.append(nextiter[1][1])
 		    self.img_id.append(nextiter[1][0])
 
@@ -89,7 +89,7 @@ class scenedesc():
 
 
 	def create_model(self, ret_model = False):
-	       
+		''' 
 		image_model = Sequential()
 		image_model.add(Dense(EMBEDDING_DIM, input_dim = 4096, activation='relu'))
 		image_model.add(RepeatVector(self.max_length))
@@ -100,11 +100,28 @@ class scenedesc():
 		lang_model.add(TimeDistributed(Dense(EMBEDDING_DIM)))
 
 		model = Sequential()
-		model.add(Merge([image_model, lang_model], mode='concat'))
+		model.add(Merge([image_model, lang_model],mode='concat'))
 		model.add(LSTM(1000,return_sequences=False))
 		model.add(Dense(self.vocab_size))
 		model.add(Activation('softmax'))
+		'''
 
+		img_input=Input(shape=(4096,))
+		img_1=Dense(EMBEDDING_DIM,activation='relu')(img_input)
+		img_2=RepeatVector(self.max_length)(img_1)
+
+		lang_input=Input(shape=(self.max_length,))
+		lang_1=Embedding(self.vocab_size,256,input_length=self.max_length)(lang_input)
+		lang_2=LSTM(256,return_sequences=True)(lang_1)
+		lang_3=TimeDistributed(Dense(128))(lang_2)
+
+		merge=concatenate([img_2,lang_3],name='merge_2')
+		lstm=LSTM(1000,return_sequences=False)(merge)
+		dense=Dense(self.vocab_size)(lstm)
+		output=Activation('softmax')(dense)
+
+		model=Model(inputs=[img_input,lang_input],outputs=output)
+		
 		print("Model created!")
 
 		if(ret_model==True):
