@@ -38,7 +38,7 @@ class scenedesc():
 		vocab = []
 		for token in tokens:
 		    vocab.extend(token)
-		print len(vocab)
+		print(len(vocab))
 		vocab = list(set(vocab))
 		self.vocab_size = len(vocab)
 
@@ -105,7 +105,7 @@ class scenedesc():
 		model.add(Dense(self.vocab_size))
 		model.add(Activation('softmax'))
 
-		print ("Model created!")
+		print("Model created!")
 
 		if(ret_model==True):
 		    return model

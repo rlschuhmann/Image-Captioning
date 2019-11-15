@@ -27,17 +27,17 @@ def encode_image():
 	image_encodings = {}
 	
 	train_imgs_id = open("Flickr8K_Text/Flickr_8k.trainImages.txt").read().split('\n')[:-1]
-	print len(train_imgs_id)
+	print(len(train_imgs_id))
 	test_imgs_id = open("Flickr8K_Text/Flickr_8k.testImages.txt").read().split('\n')[:-1]
 	images = []
 	images.extend(train_imgs_id)
 	images.extend(test_imgs_id)
-	print len(images)
+	print(len(images))
 	bar = progressbar.ProgressBar(maxval=len(images), \
     		widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
 	bar.start()
 	counter=1
-	print "Encoding images"
+	print("Encoding images")
 
 	for img in images:
 		path = "Flickr8K_Data/"+str(img)
@@ -48,7 +48,7 @@ def encode_image():
 	bar.finish()
 	with open( "image_encodings.p", "wb" ) as pickle_f:
 		pickle.dump( image_encodings, pickle_f )
-	print "Encodings dumped into image_encodings.p"
+	print("Encodings dumped into image_encodings.p")
 
 
 
