@@ -97,9 +97,10 @@ def test_model_structure(sd):
 	layers=model.layers
 
 	#check correct number and type of layers: if multiple model instances are created during one test session, then the numbers for the layers can change
-	assert(len(layers)==4)
 	layer_names=[layer.name for layer in layers]
 	layer_names=[n[:n.index('_')] for n in layer_names]#discarding numbers
+	layer_names=layer_names[-4:]
+	assert(len(layers)==4)#the sequential api does not allow us to peek into anything inside of the merge layer
 	true_layer_names=['merge','lstm','dense','activation']
 	assert(layer_names==true_layer_names)
 
