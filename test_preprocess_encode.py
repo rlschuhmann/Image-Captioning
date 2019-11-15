@@ -14,8 +14,8 @@ from keras.preprocessing import image
 from keras.applications.imagenet_utils import preprocess_input as k_preprocess_input #distinguish from imagenet_utils.preprocess_input!
 
 
-captions_folder='Flickr8K_Text/'
-image_folder='Flickr8K_Data/'
+captions_folder='Flickr8K_Text'
+image_folder='Flickr8K_Data'
 test_image='3666056567_661e25f54c.jpg'
 
 

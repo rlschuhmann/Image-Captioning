@@ -204,7 +204,7 @@ def test_load_image(sd):
 	'''
 	Wherein we test the wrapper load_image by checking one example
 	'''
-	image_folder='Flickr8K_Data/'
+	image_folder='Flickr8K_Data'
 	true_img_slice=np.array([[105., 166., 148.,  55.,  69., 117., 136., 150., 191., 209.],
        		[105., 174., 183., 115.,  73.,  87., 127., 142., 147., 207.],
        		[ 77., 162., 186., 127.,  86.,  82., 117., 129., 148., 200.],

@@ -10,12 +10,12 @@ from SceneDesc import scenedesc
 import encode_image as ei
 
 	
-test_img='Flickr8K_Data/997722733_0cb5439472.jpg'
+test_img=os.path.join('Flickr8K_Data','997722733_0cb5439472.jpg')
 sd=scenedesc()
 
 try:
 	model=sd.create_model(ret_model=True)
-	model.load_weights('Output/Weights.h5')
+	model.load_weights(os.path.join('Output','Weights.h5'))
 	preload_model=True
 	print('pre-computed weights loaded; model created')
 
