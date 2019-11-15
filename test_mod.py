@@ -1,4 +1,4 @@
-import cPickle as pickle
+import pickle
 import SceneDesc as desc
 from keras.preprocessing import sequence
 import nltk
