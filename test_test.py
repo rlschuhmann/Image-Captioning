@@ -13,16 +13,19 @@ import encode_image as ei
 test_img=os.path.join('Flickr8K_Data','997722733_0cb5439472.jpg')
 sd=scenedesc()
 
-try:
-	model=sd.create_model(ret_model=True)
-	model.load_weights(os.path.join('Output','Weights.h5'))
-	preload_model=True
-	print('pre-computed weights loaded; model created')
 
-except IOError:
-	print('no pre-computed weights found; skipping testing tests')
-	preload_model=False
+@pytest.fixture(scope='module')
+def preload_model(request):
+	try:
+		model=sd.create_model(ret_model=True)
+		model.load_weights(os.path.join('Output','Weights.h5'))
+		preload_model=True
+		print('pre-computed weights loaded; model created')
 
+	except IOError:
+		print('no pre-computed weights found; skipping testing tests')
+		preload_model=False
+	return model
 
 try:
 	tf_available_devices=str(device_lib.list_local_devices())
@@ -48,14 +51,15 @@ def test_process_caption():
 	capt=process_caption(sd,'<start> A black dog is running after a white dog in the snow . <end>')
 	assert(capt=='A black dog is running after a white dog in the snow .')
 
+@pytest.mark.needs_weights
 @pytest.mark.skipif(not preload_model, reason='no pre-computed weights found')
-def test_generate_captions():
+def test_generate_captions(preload_model):
 	'''
 	Wherein we test test_mod.generate_captions. Since you may
 	use pre-computed weights from any source only print the 
 	generated sentence to stdout and check that it is nonempty
 	'''
-
+	model=preloaded_model
 	encoded_img=ei.encodings(ei.model_gen(),test_img)
 	caption=generate_captions(sd,model,encoded_img,beam_size=3)
 	def report():
@@ -63,11 +67,13 @@ def test_generate_captions():
 	atexit.register(report)
 	assert(len(caption)>0)
 
+@pytest.mark.needs_weights
 @pytest.mark.skipif(not preload_model, reason='no pre-computed weights found')
-def test_text_creation():
+def test_text_creation(preload_model):
 	'''
 	Wherein we test the caption generation wrapper test.text.
 	'''
+	model=preload_model
 	text(test_img)
 	def report():
 		print('The model generated a caption that you should hear (and read, if you run pytest with the -s flag). This caption should be the same as the caption you can read below, and you should also have heard it read out.\n')
