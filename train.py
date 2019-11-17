@@ -8,6 +8,7 @@ def train(epoch,retrain=False,save=False):
     weightfile='Output/Weights.h5'
     if retrain:
         model=sd.create_model(ret_model=True)
+        print('loading weights from '+weightfile)
         model.load_weights(weightfile)
         model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     else:
