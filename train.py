@@ -15,7 +15,7 @@ def train(epoch,retrain=False,save=False):
     batch_size = 512
 
     if save:
-        callback=[ModelCheckpoint(filepath=weightfile,verbose=1,save_best_only=True)]
+        callback=[ModelCheckpoint(filepath=weightfile,verbose=1,save_best_only=False,save_weights_only=True)]
     else:
         callback=None
 
