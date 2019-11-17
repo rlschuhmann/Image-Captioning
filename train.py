@@ -9,6 +9,7 @@ def train(epoch,retrain=False,save=False):
     if retrain:
         model=sd.create_model(ret_model=True)
         model.load_weights(weightfile)
+        model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     else:
         model = sd.create_model()
     batch_size = 512
