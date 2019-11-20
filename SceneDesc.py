@@ -40,7 +40,10 @@ class scenedesc():
 		    vocab.extend(token)
 		print(len(vocab))
 		vocab = list(set(vocab))
+		vocab.sort()
+
 		self.vocab_size = len(vocab)
+
 
 		caption_length = [len(caption.split()) for caption in self.captions]
 		self.max_length = max(caption_length)
